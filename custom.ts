@@ -15,22 +15,58 @@ enum AtmMenu {
     Charge,
 }
 
+enum AtmFlow {
+    Run,
+    ShowMain,
+    ShowBalance,
+    ShowDeposit,
+    ShowWithdraw,
+    ShowCharge,
+    End,
+}
+
+const flow: AtmFlow[] = [];
+
 /**
  * Custom blocks
  */
-//% weight=100 color=#fab005 icon=""
+//% weight=100 color=#fab005 icon=""
 namespace atm {
+
+    //% block="ATMプログラム"
+    export function sendAtmFlow(body: () => void): void {
+        body();
+
+        if (flow.length !== 0) {
+            flow.forEach(f => {
+                player.execute(`atm flow ${f}`);
+            });
+        }
+    };
+
+    //% block="ATMを起動させる"
+    export function runAtm(): void {
+        flow.push(AtmFlow.Run);
+    }
+
+    //% block="ATMを終了させる"
+    export function endAtm(): void {
+        flow.push(AtmFlow.End);
+    }
+
     //% block="メニュー $menu を表示する"
     export function showMenu(menu: AtmMenu): void {
         player.execute(`atm show ${menu}`);
     }
 
-    /**
-     * TODO: describe your function here
-     * @param value describe value here, eg: 5
-     */
-    //% block
-    export function fib(value: number): number {
-        return value <= 1 ? value : fib(value -1) + fib(value - 2);
+    //% block="残高確認ボタンを押したとき"
+    export function onPushBalance(ev: () => void): void {
+
+    }
+
+    //% block="エメラルドを持っている"
+    export function hasEmerald(): boolean {
+        
+        return true;
     }
 }
