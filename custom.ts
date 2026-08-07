@@ -214,7 +214,7 @@ namespace atm {
         // 例：
         // atm program 0,2,3,0,3,1,4,1,0,...
         player.execute(
-            "atm program " + serializeProgram()
+            "edu:atm_program " + serializeProgram()
         );
     }
 
