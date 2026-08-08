@@ -1,25 +1,5 @@
 /**
- * ATM Custom Blocks
- *
- * MakeCode側ではATMの「ロジック」を構築し、
- * 数値化した命令列（ATM Bytecode）としてScriptAPIへ送信する。
- *
- * MakeCode側：
- *   ・画面を表示しない
- *   ・条件を判定しない
- *   ・状態を管理しない
- *   ・ATMのロジックを命令列として構築する
- *
- * ScriptAPI側：
- *   ・命令列を解釈する
- *   ・画面を表示する
- *   ・ボタン入力を待つ
- *   ・条件を判定する
- *   ・状態を管理する
- */
-
-/**
- * ATMで使用するメニュー
+ * ATMメニュー
  */
 //% blockHidden=true
 enum AtmMenu {
@@ -36,192 +16,131 @@ enum AtmMenu {
     Charge
 }
 
-/**
- * ScriptAPIへ送信する命令
- *
- * 1命令につき1つの数値を使用する。
- *
- * 引数を必要とする命令は、
- *
- *   [Opcode, Argument]
- *
- * の順番で格納する。
- *
- * 例：
- *
- *   SHOW_MENU, Balance
- *
- * → [3, 0]
- */
-//% blockHidden=true
-enum AtmOpcode {
-
-    // ATMを起動
-    Run,
-
-    // ATMを終了
-    End,
-
-    // メインメニューの定義開始
-    MenuBegin,
-
-    // メインメニューのボタン
-    MenuButton,
-
-    // メインメニューの定義終了
-    MenuEnd,
-
-    // ボタンイベント開始
-    EventBegin,
-
-    // ボタンイベント終了
-    EventEnd,
-
-    // 条件開始
-    If,
-
-    // 条件のelse
-    Else,
-
-    // 条件終了
-    EndIf,
-
-    // 残高画面
-    ShowBalance,
-
-    // 預金画面
-    ShowDeposit,
-
-    // 引き出し画面
-    ShowWithdraw,
-
-    // チャージ画面
-    ShowCharge,
-
-    // 現在のイベントを終了して呼び出し元へ戻る
-    Return
-}
 
 /**
- * ScriptAPI側で評価する条件
+ * ATMの条件
  */
 //% blockHidden=true
 enum AtmCondition {
-
-    // エメラルドを持っている
+    //% block="エメラルドを持っている"
     HasEmerald,
 
-    // キャッシュカードを持っている
+    //% block="キャッシュカードを持っている"
     HasCashCard,
 
-    // 残高が十分
-    HasEnoughBalance
+    //% block="残高がある"
+    HasBalance
 }
 
 
 /**
- * 現在構築中のATMプログラム
+ * 現在作成中のATMプログラム
+ */
+let atmFlow: string[] = [];
+
+
+/**
+ * 現在の階層
  *
- * JSONなどは使用せず、単純な数値配列として保持する。
+ * 0 = 最上位
+ * 1 = 1階層下
+ * 2 = 2階層下
  */
-let atmProgram: number[] = [];
+let atmDepth = 0;
 
 
 /**
- * 命令を追加する
- */
-function emit(opcode: AtmOpcode): void {
-
-    atmProgram.push(opcode);
-}
-
-
-/**
- * 命令＋引数を追加する
- */
-function emitArg(opcode: AtmOpcode, argument: number): void {
-
-    atmProgram.push(opcode);
-    atmProgram.push(argument);
-}
-
-
-/**
- * 数値配列をコマンド文字列へ変換する
+ * DSL命令を追加する
  *
  * 例：
  *
- * [0, 2, 0, 3, 1]
+ * depth = 0
+ * emit("RUN")
  *
  * ↓
  *
- * "0,2,0,3,1"
+ * RUN
+ *
+ *
+ * depth = 1
+ * emit("SHOW:BALANCE")
+ *
+ * ↓
+ *
+ * >SHOW:BALANCE
  */
-function serializeProgram(): string {
+function emit(command: string): void {
 
-    let result = "";
+    let prefix = "";
 
-    for (let i = 0; i < atmProgram.length; i++) {
-
-        if (i > 0) {
-            result += ",";
-        }
-
-        result += atmProgram[i];
+    for (let i = 0; i < atmDepth; i++) {
+        prefix += ">";
     }
 
-    return result;
+    atmFlow.push(prefix + command);
 }
 
 
 /**
- * Custom blocks
+ * 階層を1つ下げる
+ */
+function pushDepth(): void {
+
+    atmDepth++;
+}
+
+
+/**
+ * 階層を1つ上げる
+ */
+function popDepth(): void {
+
+    if (atmDepth > 0) {
+        atmDepth--;
+    }
+}
+
+
+/**
+ * ATM Custom Blocks
  */
 //% weight=100 color=#fab005 icon=""
 namespace atm {
 
     /**
-     * ATMプログラムを作成してScriptAPIへ送信する。
-     *
-     * MakeCode上では、
-     *
+     * ============================================================
+     * ATM PROGRAM
+     * ============================================================
+     */
+
+    /**
      * ATMプログラム
-     *   ├ ATMを起動
-     *   ├ メニュー
-     *   ├ イベント
-     *   └ ATMを終了
-     *
-     * のように使用する。
-     *
-     * @param body ATMプログラム
      */
     //% block="ATMプログラム"
     export function program(body: () => void): void {
 
-        // 前回のプログラムを破棄
-        atmProgram = [];
+        atmFlow = [];
+        atmDepth = 0;
 
-        // プログラムを構築
         body();
 
-        // 何も登録されていなければ送信しない
-        if (atmProgram.length == 0) {
-            return;
+        if (atmFlow.length > 0) {
+
+            player.execute(
+                "atm program " + atmFlow.join("|")
+            );
         }
 
-        // 数値命令列を1回のカスタムコマンドで送信
-        //
-        // 例：
-        // atm program 0,2,3,0,3,1,4,1,0,...
-        player.execute(
-            'edu:atm_program "' + serializeProgram() + '"'
-        );
+        atmFlow = [];
+        atmDepth = 0;
     }
 
 
-    //==================================================
-    // ATM
-    //==================================================
+    /**
+     * ============================================================
+     * BASIC
+     * ============================================================
+     */
 
     /**
      * ATMを起動させる
@@ -229,7 +148,7 @@ namespace atm {
     //% block="ATMを起動させる"
     export function runAtm(): void {
 
-        emit(AtmOpcode.Run);
+        emit("RUN");
     }
 
 
@@ -239,95 +158,90 @@ namespace atm {
     //% block="ATMを終了させる"
     export function endAtm(): void {
 
-        emit(AtmOpcode.End);
-    }
-
-
-    //==================================================
-    // Menu
-    //==================================================
-
-    /**
-     * メインメニューの定義を開始する。
-     *
-     * この間に showMenu() を呼び出すことで、
-     * メインメニューに表示するボタンを指定する。
-     *
-     * 例：
-     *
-     * メニュー開始
-     *   残高確認
-     *   預金
-     *   引き出し
-     * メニュー終了
-     */
-    //% block="メインメニューを開始"
-    export function beginMenu(): void {
-
-        emit(AtmOpcode.MenuBegin);
+        emit("END");
     }
 
 
     /**
-     * メインメニューに表示するボタンを指定する。
-     *
-     * ここで指定したメニュー情報は、
-     * 「メインメニュー」というFlowの1階層下の情報として
-     * ScriptAPIへ送信される。
-     *
-     * 例：
-     *
-     * showMenu(Balance)
-     * showMenu(Deposit)
-     *
-     * ↓
-     *
-     * MENU_BEGIN
-     * BUTTON Balance
-     * BUTTON Deposit
-     * MENU_END
+     * ============================================================
+     * MENU
+     * ============================================================
      */
-    //% block="メニュー $menu を表示する"
-    export function showMenu(menu: AtmMenu): void {
 
-        emitArg(
-            AtmOpcode.MenuButton,
-            menu
-        );
+    /**
+     * メインメニューを表示する
+     *
+     * このブロック自体は
+     *
+     * MENU
+     *
+     * を生成し、
+     * 内側に配置されたブロックを
+     * 1階層下として扱う。
+     */
+    //% block="メインメニューを表示"
+    export function showMainMenu(body: () => void): void {
+
+        emit("MENU");
+
+        pushDepth();
+
+        body();
+
+        popDepth();
+
+        emit("MENU_END");
     }
 
 
     /**
-     * メインメニューの定義を終了する。
+     * メニューにボタンを追加する
      */
-    //% block="メインメニューを終了"
-    export function endMenu(): void {
+    //% block="メニューに $menu ボタンを追加"
+    export function addMenuButton(menu: AtmMenu): void {
 
-        emit(AtmOpcode.MenuEnd);
+        switch (menu) {
+
+            case AtmMenu.Balance:
+                emit("BUTTON:BALANCE");
+                break;
+
+            case AtmMenu.Deposit:
+                emit("BUTTON:DEPOSIT");
+                break;
+
+            case AtmMenu.Withdraw:
+                emit("BUTTON:WITHDRAW");
+                break;
+
+            case AtmMenu.Charge:
+                emit("BUTTON:CHARGE");
+                break;
+        }
     }
 
 
-    //==================================================
-    // Events
-    //==================================================
+    /**
+     * ============================================================
+     * EVENTS
+     * ============================================================
+     */
 
     /**
      * 残高確認ボタンを押したとき
-     *
-     * ScriptAPI側では、実際にボタンが押されたときに
-     * このイベントの中身を実行する。
      */
     //% block="残高確認ボタンを押したとき"
     export function onPushBalance(body: () => void): void {
 
-        emitArg(
-            AtmOpcode.EventBegin,
-            AtmMenu.Balance
-        );
+        emit("EVENT:BALANCE");
+
+        pushDepth();
 
         body();
 
-        emit(AtmOpcode.EventEnd);
+        popDepth();
+
+        emit("EVENT_END");
     }
 
 
@@ -337,14 +251,15 @@ namespace atm {
     //% block="預金ボタンを押したとき"
     export function onPushDeposit(body: () => void): void {
 
-        emitArg(
-            AtmOpcode.EventBegin,
-            AtmMenu.Deposit
-        );
+        emit("EVENT:DEPOSIT");
+
+        pushDepth();
 
         body();
 
-        emit(AtmOpcode.EventEnd);
+        popDepth();
+
+        emit("EVENT_END");
     }
 
 
@@ -354,14 +269,15 @@ namespace atm {
     //% block="引き出しボタンを押したとき"
     export function onPushWithdraw(body: () => void): void {
 
-        emitArg(
-            AtmOpcode.EventBegin,
-            AtmMenu.Withdraw
-        );
+        emit("EVENT:WITHDRAW");
+
+        pushDepth();
 
         body();
 
-        emit(AtmOpcode.EventEnd);
+        popDepth();
+
+        emit("EVENT_END");
     }
 
 
@@ -371,171 +287,177 @@ namespace atm {
     //% block="チャージボタンを押したとき"
     export function onPushCharge(body: () => void): void {
 
-        emitArg(
-            AtmOpcode.EventBegin,
-            AtmMenu.Charge
-        );
+        emit("EVENT:CHARGE");
+
+        pushDepth();
 
         body();
 
-        emit(AtmOpcode.EventEnd);
+        popDepth();
+
+        emit("EVENT_END");
     }
 
 
-    //==================================================
-    // Conditions
-    //==================================================
+    /**
+     * ============================================================
+     * SCREEN
+     * ============================================================
+     */
 
     /**
-     * エメラルドを持っているかどうか。
+     * 残高画面を表示する
+     */
+    //% block="残高画面を表示"
+    export function showBalance(): void {
+
+        emit("SHOW:BALANCE");
+    }
+
+
+    /**
+     * 預金画面を表示する
+     */
+    //% block="預金画面を表示"
+    export function showDeposit(): void {
+
+        emit("SHOW:DEPOSIT");
+    }
+
+
+    /**
+     * 引き出し画面を表示する
+     */
+    //% block="引き出し画面を表示"
+    export function showWithdraw(): void {
+
+        emit("SHOW:WITHDRAW");
+    }
+
+
+    /**
+     * チャージ画面を表示する
+     */
+    //% block="チャージ画面を表示"
+    export function showCharge(): void {
+
+        emit("SHOW:CHARGE");
+    }
+
+
+    /**
+     * エラー画面を表示する
+     */
+    //% block="エラー画面を表示"
+    export function showError(): void {
+
+        emit("SHOW:ERROR");
+    }
+
+
+    /**
+     * ============================================================
+     * FLOW
+     * ============================================================
+     */
+
+    /**
+     * メニューに戻る
+     */
+    //% block="メニューに戻る"
+    export function returnMenu(): void {
+
+        emit("RETURN");
+    }
+
+
+    /**
+     * ============================================================
+     * CONDITION
+     * ============================================================
+     */
+
+    /**
+     * エメラルドを持っている
      *
-     * この関数自身は条件を判定しない。
+     * 戻り値はMakeCode上で
      *
-     * ScriptAPI側で、
-     *
-     *   プレイヤーのインベントリ
-     *
-     * を確認する。
-     *
-     * booleanのtrueは、MakeCode上で
-     *
-     *   もし「エメラルドを持っている」
+     * if (atm.hasEmerald()) {
      *
      * のような条件ブロックとして使用するためのもの。
+     *
+     * 実際の条件判定はScriptAPI側で行う。
      */
     //% block="エメラルドを持っている"
     export function hasEmerald(): boolean {
 
-        emitArg(
-            AtmOpcode.If,
-            AtmCondition.HasEmerald
-        );
+        emit("IF:HAS_EMERALD");
 
-        // 実際の条件判定はScriptAPI側。
+        pushDepth();
+
         return true;
     }
 
 
     /**
-     * キャッシュカードを持っているかどうか。
+     * キャッシュカードを持っている
      */
     //% block="キャッシュカードを持っている"
     export function hasCashCard(): boolean {
 
-        emitArg(
-            AtmOpcode.If,
-            AtmCondition.HasCashCard
-        );
+        emit("IF:HAS_CASH_CARD");
+
+        pushDepth();
 
         return true;
     }
 
 
     /**
-     * 残高が十分かどうか。
+     * 残高がある
      */
-    //% block="残高が十分"
-    export function hasEnoughBalance(): boolean {
+    //% block="残高がある"
+    export function hasBalance(): boolean {
 
-        emitArg(
-            AtmOpcode.If,
-            AtmCondition.HasEnoughBalance
-        );
+        emit("IF:HAS_BALANCE");
+
+        pushDepth();
 
         return true;
     }
 
 
     /**
-     * 条件のelse側。
+     * ============================================================
+     * IF
+     * ============================================================
      */
-    //% block="そうでなければ"
+
+    /**
+     * ELSE
+     *
+     * JavaScriptのelseではなく、
+     * ATM DSL上のELSEを生成する。
+     */
+    //% block="それ以外なら"
     export function elseCondition(): void {
 
-        emit(AtmOpcode.Else);
+        popDepth();
+
+        emit("ELSE");
+
+        pushDepth();
     }
 
 
     /**
-     * 条件を終了する。
+     * IFを終了する
      */
-    //% block="条件を終了"
+    //% block="条件分岐を終了"
     export function endIf(): void {
 
-        emit(AtmOpcode.EndIf);
-    }
+        popDepth();
 
-
-    //==================================================
-    // Screens
-    //==================================================
-
-    /**
-     * 残高画面を表示する。
-     */
-    //% block="残高画面を表示する"
-    export function showBalance(): void {
-
-        emit(AtmOpcode.ShowBalance);
-    }
-
-
-    /**
-     * 預金画面を表示する。
-     */
-    //% block="預金画面を表示する"
-    export function showDeposit(): void {
-
-        emit(AtmOpcode.ShowDeposit);
-    }
-
-
-    /**
-     * 引き出し画面を表示する。
-     */
-    //% block="引き出し画面を表示する"
-    export function showWithdraw(): void {
-
-        emit(AtmOpcode.ShowWithdraw);
-    }
-
-
-    /**
-     * チャージ画面を表示する。
-     */
-    //% block="チャージ画面を表示する"
-    export function showCharge(): void {
-
-        emit(AtmOpcode.ShowCharge);
-    }
-
-
-    //==================================================
-    // Flow
-    //==================================================
-
-    /**
-     * 現在のイベント処理を終了して、
-     * 呼び出し元のFlowへ戻る。
-     *
-     * 例えば
-     *
-     * 残高確認ボタンを押したとき
-     *   残高画面
-     *   戻る
-     *
-     * とした場合、
-     *
-     * EVENT_BEGIN Balance
-     * SHOW_BALANCE
-     * RETURN
-     * EVENT_END
-     *
-     * という命令になる。
-     */
-    //% block="元の画面に戻る"
-    export function returnToPrevious(): void {
-
-        emit(AtmOpcode.Return);
+        emit("IF_END");
     }
 }
