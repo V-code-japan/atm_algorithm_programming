@@ -239,7 +239,7 @@ namespace atm_program {
         if (atmFlow.length > 0) {
 
             player.execute(
-                "atm program " + atmFlow.join("|")
+                "edu:atm_program " + atmFlow.join("|")
             );
         }
 
