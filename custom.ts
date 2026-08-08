@@ -234,6 +234,8 @@ namespace atm_program {
      * このブロックの中に置かれたブロックが
      * ATMプログラム本体になる。
      */
+    //% group="全体の制御"
+    //% weight = 10
     //% block="ATMプログラム"
     export function program(body: () => void): void {
 
@@ -263,6 +265,8 @@ namespace atm_program {
     /**
      * ATMを起動
      */
+    //% group="全体の制御"
+    //% weight=9
     //% block="ATMを起動させる"
     export function runAtm(): void {
 
@@ -273,6 +277,8 @@ namespace atm_program {
     /**
      * ATMを終了
      */
+    //% group="全体の制御"
+    //% weight=8
     //% block="ATMを終了させる"
     export function endAtm(): void {
 
@@ -294,6 +300,7 @@ namespace atm_program {
      * メニューの内容として扱う。
      */
     //% group="メインメニュー"
+    //% weight=10
     //% block="メインメニューを表示"
     //% handlerStatement=true
     export function showMainMenu(body: () => void): void {
@@ -314,6 +321,7 @@ namespace atm_program {
      * メニューにボタンを追加する
      */
     //% group="メインメニュー"
+    //% weight=9
     //% block="ボタン: $atmButton を追加する"
     export function addButton(atmButton: AtmButton): void {
 
@@ -332,6 +340,7 @@ namespace atm_program {
      * 残高確認ボタンを押したとき
      */
     //% group="各メニュー"
+    //% weight=10
     //% block="残高確認ボタンを押したとき"
     export function onPushBalance(body: () => void): void {
 
@@ -351,6 +360,7 @@ namespace atm_program {
      * 預金ボタンを押したとき
      */
     //% group="各メニュー"
+    //% weight=9
     //% block="預金ボタンを押したとき"
     export function onPushDeposit(body: () => void): void {
 
@@ -370,6 +380,7 @@ namespace atm_program {
      * 引き出しボタンを押したとき
      */
     //% group="各メニュー"
+    //% weight=8
     //% block="引き出しボタンを押したとき"
     export function onPushWithdraw(body: () => void): void {
 
@@ -389,6 +400,7 @@ namespace atm_program {
      * チャージボタンを押したとき
      */
     //% group="各メニュー"
+    //% weight=7
     //% block="チャージボタンを押したとき"
     export function onPushCharge(body: () => void): void {
 
@@ -417,6 +429,7 @@ namespace atm_program {
      */
 
     //% group="各メニュー"
+    //% weight=6
     //% block="画面: $atmMenu を表示する"
     export function show(atmMenu: AtmMenu): void {
         emit("SHOW:" + getAtmMenuString(atmMenu));
@@ -426,6 +439,7 @@ namespace atm_program {
      * メニューに戻る
      */
     //% group="各メニュー"
+    //% weight=5
     //% block="メインメニューに戻る"
     export function returnMenu(): void {
 
