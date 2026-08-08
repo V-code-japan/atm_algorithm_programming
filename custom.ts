@@ -1,6 +1,16 @@
 /**
- * ATMメニュー
+ * このファイルを使って、独自の関数やブロックを定義してください。
+ * 詳しくはこちらを参照してください：
+ * https://minecraft.makecode.com/blocks/custom
  */
+
+
+/**
+ * ============================================================
+ * ATM メニュー
+ * ============================================================
+ */
+
 //% blockHidden=true
 enum AtmMenu {
     //% block="残高確認"
@@ -18,8 +28,11 @@ enum AtmMenu {
 
 
 /**
- * ATMの条件
+ * ============================================================
+ * ATM 条件
+ * ============================================================
  */
+
 //% blockHidden=true
 enum AtmCondition {
     //% block="エメラルドを持っている"
@@ -34,40 +47,30 @@ enum AtmCondition {
 
 
 /**
- * 現在作成中のATMプログラム
+ * ============================================================
+ * DSL Builder
+ * ============================================================
  */
+
 let atmFlow: string[] = [];
 
-
 /**
- * 現在の階層
+ * 現在のDSL階層
  *
- * 0 = 最上位
- * 1 = 1階層下
- * 2 = 2階層下
+ * 0:
+ * RUN
+ *
+ * 1:
+ * >SHOW:BALANCE
+ *
+ * 2:
+ * >>SHOW:DEPOSIT
  */
 let atmDepth = 0;
 
 
 /**
- * DSL命令を追加する
- *
- * 例：
- *
- * depth = 0
- * emit("RUN")
- *
- * ↓
- *
- * RUN
- *
- *
- * depth = 1
- * emit("SHOW:BALANCE")
- *
- * ↓
- *
- * >SHOW:BALANCE
+ * DSL命令を追加
  */
 function emit(command: string): void {
 
@@ -102,21 +105,28 @@ function popDepth(): void {
 
 
 /**
- * ATM Custom Blocks
+ * ============================================================
+ * Custom Blocks
+ * ============================================================
  */
+
 //% weight=100 color=#fab005 icon=""
 namespace atm {
 
+
     /**
-     * ============================================================
+     * ========================================================
      * ATM PROGRAM
-     * ============================================================
+     * ========================================================
      */
 
     /**
      * ATMプログラム
+     *
+     * このブロックの中に置かれたブロックが
+     * ATMプログラム本体になる。
      */
-    //% block="ATMプログラム"
+    //% block="ATMプログラム $body"
     export function program(body: () => void): void {
 
         atmFlow = [];
@@ -137,13 +147,13 @@ namespace atm {
 
 
     /**
-     * ============================================================
+     * ========================================================
      * BASIC
-     * ============================================================
+     * ========================================================
      */
 
     /**
-     * ATMを起動させる
+     * ATMを起動
      */
     //% block="ATMを起動させる"
     export function runAtm(): void {
@@ -153,7 +163,7 @@ namespace atm {
 
 
     /**
-     * ATMを終了させる
+     * ATMを終了
      */
     //% block="ATMを終了させる"
     export function endAtm(): void {
@@ -163,23 +173,19 @@ namespace atm {
 
 
     /**
-     * ============================================================
-     * MENU
-     * ============================================================
+     * ========================================================
+     * MAIN MENU
+     * ========================================================
      */
 
     /**
-     * メインメニューを表示する
+     * メインメニューを表示
      *
-     * このブロック自体は
-     *
-     * MENU
-     *
-     * を生成し、
-     * 内側に配置されたブロックを
-     * 1階層下として扱う。
+     * このブロックの中に置かれた
+     * 「メニューに表示するボタン」を
+     * メニューの内容として扱う。
      */
-    //% block="メインメニューを表示"
+    //% block="メインメニューを表示 $body"
     export function showMainMenu(body: () => void): void {
 
         emit("MENU");
@@ -195,42 +201,55 @@ namespace atm {
 
 
     /**
-     * メニューにボタンを追加する
+     * メニューに残高確認ボタンを追加
      */
-    //% block="メニューに $menu ボタンを追加"
-    export function addMenuButton(menu: AtmMenu): void {
+    //% block="残高確認ボタン"
+    export function balanceButton(): void {
 
-        switch (menu) {
-
-            case AtmMenu.Balance:
-                emit("BUTTON:BALANCE");
-                break;
-
-            case AtmMenu.Deposit:
-                emit("BUTTON:DEPOSIT");
-                break;
-
-            case AtmMenu.Withdraw:
-                emit("BUTTON:WITHDRAW");
-                break;
-
-            case AtmMenu.Charge:
-                emit("BUTTON:CHARGE");
-                break;
-        }
+        emit("BUTTON:BALANCE");
     }
 
 
     /**
-     * ============================================================
-     * EVENTS
-     * ============================================================
+     * メニューに預金ボタンを追加
+     */
+    //% block="預金ボタン"
+    export function depositButton(): void {
+
+        emit("BUTTON:DEPOSIT");
+    }
+
+
+    /**
+     * メニューに引き出しボタンを追加
+     */
+    //% block="引き出しボタン"
+    export function withdrawButton(): void {
+
+        emit("BUTTON:WITHDRAW");
+    }
+
+
+    /**
+     * メニューにチャージボタンを追加
+     */
+    //% block="チャージボタン"
+    export function chargeButton(): void {
+
+        emit("BUTTON:CHARGE");
+    }
+
+
+    /**
+     * ========================================================
+     * EVENT HANDLER
+     * ========================================================
      */
 
     /**
      * 残高確認ボタンを押したとき
      */
-    //% block="残高確認ボタンを押したとき"
+    //% block="残高確認ボタンを押したとき $body"
     export function onPushBalance(body: () => void): void {
 
         emit("EVENT:BALANCE");
@@ -248,7 +267,7 @@ namespace atm {
     /**
      * 預金ボタンを押したとき
      */
-    //% block="預金ボタンを押したとき"
+    //% block="預金ボタンを押したとき $body"
     export function onPushDeposit(body: () => void): void {
 
         emit("EVENT:DEPOSIT");
@@ -266,7 +285,7 @@ namespace atm {
     /**
      * 引き出しボタンを押したとき
      */
-    //% block="引き出しボタンを押したとき"
+    //% block="引き出しボタンを押したとき $body"
     export function onPushWithdraw(body: () => void): void {
 
         emit("EVENT:WITHDRAW");
@@ -284,7 +303,7 @@ namespace atm {
     /**
      * チャージボタンを押したとき
      */
-    //% block="チャージボタンを押したとき"
+    //% block="チャージボタンを押したとき $body"
     export function onPushCharge(body: () => void): void {
 
         emit("EVENT:CHARGE");
@@ -300,13 +319,13 @@ namespace atm {
 
 
     /**
-     * ============================================================
+     * ========================================================
      * SCREEN
-     * ============================================================
+     * ========================================================
      */
 
     /**
-     * 残高画面を表示する
+     * 残高画面を表示
      */
     //% block="残高画面を表示"
     export function showBalance(): void {
@@ -316,7 +335,7 @@ namespace atm {
 
 
     /**
-     * 預金画面を表示する
+     * 預金画面を表示
      */
     //% block="預金画面を表示"
     export function showDeposit(): void {
@@ -326,7 +345,7 @@ namespace atm {
 
 
     /**
-     * 引き出し画面を表示する
+     * 引き出し画面を表示
      */
     //% block="引き出し画面を表示"
     export function showWithdraw(): void {
@@ -336,7 +355,7 @@ namespace atm {
 
 
     /**
-     * チャージ画面を表示する
+     * チャージ画面を表示
      */
     //% block="チャージ画面を表示"
     export function showCharge(): void {
@@ -346,7 +365,7 @@ namespace atm {
 
 
     /**
-     * エラー画面を表示する
+     * エラー画面を表示
      */
     //% block="エラー画面を表示"
     export function showError(): void {
@@ -354,12 +373,6 @@ namespace atm {
         emit("SHOW:ERROR");
     }
 
-
-    /**
-     * ============================================================
-     * FLOW
-     * ============================================================
-     */
 
     /**
      * メニューに戻る
@@ -372,28 +385,26 @@ namespace atm {
 
 
     /**
-     * ============================================================
+     * ========================================================
      * CONDITION
-     * ============================================================
+     * ========================================================
      */
 
     /**
      * エメラルドを持っている
      *
-     * 戻り値はMakeCode上で
+     * 実際の判定はScriptAPI側で行う。
      *
-     * if (atm.hasEmerald()) {
+     * MakeCode側では
      *
-     * のような条件ブロックとして使用するためのもの。
+     * IF:HAS_EMERALD
      *
-     * 実際の条件判定はScriptAPI側で行う。
+     * を生成する。
      */
     //% block="エメラルドを持っている"
     export function hasEmerald(): boolean {
 
         emit("IF:HAS_EMERALD");
-
-        pushDepth();
 
         return true;
     }
@@ -407,8 +418,6 @@ namespace atm {
 
         emit("IF:HAS_CASH_CARD");
 
-        pushDepth();
-
         return true;
     }
 
@@ -421,40 +430,51 @@ namespace atm {
 
         emit("IF:HAS_BALANCE");
 
-        pushDepth();
-
         return true;
     }
 
 
     /**
-     * ============================================================
-     * IF
-     * ============================================================
+     * ========================================================
+     * IF / ELSE
+     * ========================================================
      */
 
     /**
-     * ELSE
+     * 通常のMakeCodeの
      *
-     * JavaScriptのelseではなく、
-     * ATM DSL上のELSEを生成する。
+     * 「もし ～ なら
+     *       ○○
+     *  でなければ
+     *       ○○」
+     *
+     * と同じ構造を作る。
+     *
+     * conditionが評価された時点で
+     * hasEmerald()などがIF命令を生成しているため、
+     * この関数では実際のboolean値は使用しない。
      */
-    //% block="それ以外なら"
-    export function elseCondition(): void {
+    //% block="もし $condition なら $thenBody でなければ $elseBody"
+    export function ifElse(
+        condition: boolean,
+        thenBody: () => void,
+        elseBody: () => void
+    ): void {
+
+        // conditionの実行によって
+        // IF:XXXX がすでに生成されている。
+
+        pushDepth();
+
+        thenBody();
 
         popDepth();
 
         emit("ELSE");
 
         pushDepth();
-    }
 
-
-    /**
-     * IFを終了する
-     */
-    //% block="条件分岐を終了"
-    export function endIf(): void {
+        elseBody();
 
         popDepth();
 
