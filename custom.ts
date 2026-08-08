@@ -186,18 +186,18 @@ namespace atm {
      * メニューの内容として扱う。
      */
     //% block="メインメニューを表示"
+    //% handlerStatement=true
     export function showMainMenu(body: () => void): void {
-        for (let i = 0; i<1; i++) {
-            emit("MENU");
 
-            pushDepth();
+        emit("MENU");
 
-            body();
+        pushDepth();
 
-            popDepth();
+        body();
 
-            emit("MENU_END");
-        }
+        popDepth();
+
+        emit("MENU_END");
     }
 
 
