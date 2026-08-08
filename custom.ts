@@ -482,5 +482,9 @@ namespace atm {
         popDepth();
 
         emit("IF_END");
+
+        if (condition) {
+    
+        } else{}
     }
 }
