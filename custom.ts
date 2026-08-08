@@ -293,6 +293,7 @@ namespace atm_program {
      * 「メニューに表示するボタン」を
      * メニューの内容として扱う。
      */
+    //% group="メニュー画面"
     //% block="メインメニューを表示"
     //% handlerStatement=true
     export function showMainMenu(body: () => void): void {
@@ -312,50 +313,13 @@ namespace atm_program {
     /**
      * メニューにボタンを追加する
      */
+    //% group="メニュー画面"
     //% block="ボタン: $atmButton を追加する"
     export function addButton(atmButton: AtmButton): void {
 
         emit("BUTTON:" + getAtmButtonString(atmButton));
     }
 
-    /**
-     * メニューに残高確認ボタンを追加
-     */
-    //% block="残高確認ボタン"
-    export function balanceButton(): void {
-
-        emit("BUTTON:BALANCE");
-    }
-
-
-    /**
-     * メニューに預金ボタンを追加
-     */
-    //% block="預金ボタン"
-    export function depositButton(): void {
-
-        emit("BUTTON:DEPOSIT");
-    }
-
-
-    /**
-     * メニューに引き出しボタンを追加
-     */
-    //% block="引き出しボタン"
-    export function withdrawButton(): void {
-
-        emit("BUTTON:WITHDRAW");
-    }
-
-
-    /**
-     * メニューにチャージボタンを追加
-     */
-    //% block="チャージボタン"
-    export function chargeButton(): void {
-
-        emit("BUTTON:CHARGE");
-    }
 
 
     /**
@@ -447,7 +411,9 @@ namespace atm_program {
      * 画面を表示する命令
      * 指定した画面のメニューを表示します。
      */
-    //% block="画面: $atmMenu"
+
+    //% group="メニュー画面"
+    //% block="画面: $atmMenu を表示する"
     export function show(atmMenu: AtmMenu): void {
         emit("SHOW:" + getAtmMenuString(atmMenu));
     }
@@ -455,7 +421,7 @@ namespace atm_program {
     /**
      * メニューに戻る
      */
-    //% block="メニューに戻る"
+    //% block="メイン画面に戻る"
     export function returnMenu(): void {
 
         emit("RETURN");
