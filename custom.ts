@@ -23,7 +23,10 @@ enum AtmMenu {
     Withdraw,
 
     //% block="チャージ"
-    Charge
+    Charge,
+
+    //% block="エラー"
+    Error,
 }
 
 
@@ -158,6 +161,9 @@ function getAtmMenuString(menu: AtmMenu): string {
 
         case AtmMenu.Charge:
             return "CHARGE";
+        
+        case AtmMenu.Error:
+            return "ERROR";
     }
 
     return "";
@@ -396,56 +402,6 @@ namespace atm_program {
     }
 
     /**
-     * 残高画面を表示
-     */
-    //% block="残高画面を表示"
-    export function showBalance(): void {
-
-        emit("SHOW:BALANCE");
-    }
-
-
-    /**
-     * 預金画面を表示
-     */
-    //% block="預金画面を表示"
-    export function showDeposit(): void {
-
-        emit("SHOW:DEPOSIT");
-    }
-
-
-    /**
-     * 引き出し画面を表示
-     */
-    //% block="引き出し画面を表示"
-    export function showWithdraw(): void {
-
-        emit("SHOW:WITHDRAW");
-    }
-
-
-    /**
-     * チャージ画面を表示
-     */
-    //% block="チャージ画面を表示"
-    export function showCharge(): void {
-
-        emit("SHOW:CHARGE");
-    }
-
-
-    /**
-     * エラー画面を表示
-     */
-    //% block="エラー画面を表示"
-    export function showError(): void {
-
-        emit("SHOW:ERROR");
-    }
-
-
-    /**
      * メニューに戻る
      */
     //% block="メニューに戻る"
@@ -462,7 +418,7 @@ namespace atm_program {
      * ========================================================
      */
 
-//% weight=100 color=#fab005 icon=""
+//% weight=90 color=#78c7a3 icon=""
 //% block="ATM条件分岐"
 namespace atm_condition {
 
