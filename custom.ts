@@ -293,7 +293,7 @@ namespace atm_program {
      * 「メニューに表示するボタン」を
      * メニューの内容として扱う。
      */
-    //% group="メニュー画面"
+    //% group="メインメニュー"
     //% block="メインメニューを表示"
     //% handlerStatement=true
     export function showMainMenu(body: () => void): void {
@@ -313,7 +313,7 @@ namespace atm_program {
     /**
      * メニューにボタンを追加する
      */
-    //% group="メニュー画面"
+    //% group="メインメニュー"
     //% block="ボタン: $atmButton を追加する"
     export function addButton(atmButton: AtmButton): void {
 
@@ -331,6 +331,7 @@ namespace atm_program {
     /**
      * 残高確認ボタンを押したとき
      */
+    //% group="各メニュー"
     //% block="残高確認ボタンを押したとき"
     export function onPushBalance(body: () => void): void {
 
@@ -349,6 +350,7 @@ namespace atm_program {
     /**
      * 預金ボタンを押したとき
      */
+    //% group="各メニュー"
     //% block="預金ボタンを押したとき"
     export function onPushDeposit(body: () => void): void {
 
@@ -367,6 +369,7 @@ namespace atm_program {
     /**
      * 引き出しボタンを押したとき
      */
+    //% group="各メニュー"
     //% block="引き出しボタンを押したとき"
     export function onPushWithdraw(body: () => void): void {
 
@@ -385,6 +388,7 @@ namespace atm_program {
     /**
      * チャージボタンを押したとき
      */
+    //% group="各メニュー"
     //% block="チャージボタンを押したとき"
     export function onPushCharge(body: () => void): void {
 
@@ -412,7 +416,7 @@ namespace atm_program {
      * 指定した画面のメニューを表示します。
      */
 
-    //% group="メニュー画面"
+    //% group="各メニュー"
     //% block="画面: $atmMenu を表示する"
     export function show(atmMenu: AtmMenu): void {
         emit("SHOW:" + getAtmMenuString(atmMenu));
@@ -421,7 +425,8 @@ namespace atm_program {
     /**
      * メニューに戻る
      */
-    //% block="メイン画面に戻る"
+    //% group="各メニュー"
+    //% block="メインメニューに戻る"
     export function returnMenu(): void {
 
         emit("RETURN");
@@ -429,11 +434,11 @@ namespace atm_program {
 
 }
 
-    /**
-     * ========================================================
-     * CONDITION
-     * ========================================================
-     */
+/**
+ * ========================================================
+ * CONDITION
+ * ========================================================
+ */
 
 //% weight=90 color=#78c7a3 icon=""
 //% block="ATM条件分岐"
