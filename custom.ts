@@ -461,30 +461,25 @@ namespace atm {
     export function ifElse(
         condition: boolean,
         thenBody: () => void,
-        elseBody: () => void
+        elseBody?: () => void
     ): void {
 
         // conditionの実行によって
         // IF:XXXX がすでに生成されている。
-
-        pushDepth();
-
-        thenBody();
-
-        popDepth();
-
-        emit("ELSE");
-
-        pushDepth();
-
-        elseBody();
-
-        popDepth();
-
-        emit("IF_END");
-
         if (condition) {
-    
-        } else{}
+            pushDepth();
+
+            thenBody();
+
+            popDepth();
+        } else {
+            emit("ELSE");
+
+            pushDepth();
+
+            elseBody();
+
+            popDepth();
+        }
     }
 }
