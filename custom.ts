@@ -33,16 +33,24 @@ enum AtmMenu {
  * ============================================================
  */
 
-//% blockHidden=true
 enum AtmCondition {
     //% block="エメラルドを持っている"
     HasEmerald,
 
+    //% block="エメラルドを持っていない"
+    NotHasEmerald,
+
     //% block="キャッシュカードを持っている"
     HasCashCard,
 
+    //% block="キャッシュカードを持っていない"
+    NotHasCashCard,
+
     //% block="残高がある"
-    HasBalance
+    HasBalance,
+
+    //% block="残高がない"
+    NotHasBalance,
 }
 
 
@@ -111,7 +119,8 @@ function popDepth(): void {
  */
 
 //% weight=100 color=#fab005 icon=""
-namespace atm {
+//% block="ATMプログラム"
+namespace atm_program {
 
 
     /**
@@ -384,12 +393,17 @@ namespace atm {
         emit("RETURN");
     }
 
+}
 
     /**
      * ========================================================
      * CONDITION
      * ========================================================
      */
+
+//% weight=100 color=#fab005 icon=""
+//% block="ATM条件分岐"
+namespace atm_condition {
 
     /**
      * エメラルドを持っている
@@ -455,31 +469,15 @@ namespace atm {
      * hasEmerald()などがIF命令を生成しているため、
      * この関数では実際のboolean値は使用しない。
      */
-    //% block="もし $condition ならば $thenBody || そうでなければ $elseBody"
-    //% handlerStatement=true
-    //% expandableArgument=true
-    export function ifElse(
+    //% block="もし $condition なら || でなければ"
+    //% handlerStatement=1
+    //% expandableArgument=1
+    export function customIf(
         condition: boolean,
-        thenBody: () => void,
-        elseBody?: () => void
+        thenHandler: () => void,
     ): void {
-
-        // conditionの実行によって
-        // IF:XXXX がすでに生成されている。
-        if (condition) {
-            pushDepth();
-
-            thenBody();
-
-            popDepth();
-        } else {
-            emit("ELSE");
-
-            pushDepth();
-
-            elseBody();
-
-            popDepth();
-        }
+        pushDepth();
+        thenHandler();
+        popDepth();
     }
 }
