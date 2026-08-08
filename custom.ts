@@ -126,7 +126,7 @@ namespace atm {
      * このブロックの中に置かれたブロックが
      * ATMプログラム本体になる。
      */
-    //% block="ATMプログラム $body"
+    //% block="ATMプログラム"
     export function program(body: () => void): void {
 
         atmFlow = [];
@@ -185,7 +185,7 @@ namespace atm {
      * 「メニューに表示するボタン」を
      * メニューの内容として扱う。
      */
-    //% block="メインメニューを表示 $body"
+    //% block="メインメニューを表示"
     export function showMainMenu(body: () => void): void {
 
         emit("MENU");
