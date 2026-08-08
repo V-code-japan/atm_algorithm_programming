@@ -187,16 +187,17 @@ namespace atm {
      */
     //% block="メインメニューを表示"
     export function showMainMenu(body: () => void): void {
+        for (let i = 0; i<1; i++) {
+            emit("MENU");
 
-        emit("MENU");
+            pushDepth();
 
-        pushDepth();
+            body();
 
-        body();
+            popDepth();
 
-        popDepth();
-
-        emit("MENU_END");
+            emit("MENU_END");
+        }
     }
 
 
