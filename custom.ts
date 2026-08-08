@@ -231,8 +231,7 @@ namespace atm_program {
     /**
      * ATMプログラム
      *
-     * このブロックの中に置かれたブロックが
-     * ATMプログラム本体になる。
+     * プログラム全体を実行します。
      */
     //% group="全体の制御"
     //% weight = 10
@@ -264,6 +263,7 @@ namespace atm_program {
 
     /**
      * ATMを起動
+     * ATMを起動させます。
      */
     //% group="全体の制御"
     //% weight=9
@@ -276,6 +276,7 @@ namespace atm_program {
 
     /**
      * ATMを終了
+     * ATMを終了させます。
      */
     //% group="全体の制御"
     //% weight=8
@@ -295,9 +296,7 @@ namespace atm_program {
     /**
      * メインメニューを表示
      *
-     * このブロックの中に置かれた
-     * 「メニューに表示するボタン」を
-     * メニューの内容として扱う。
+     * このブロックの中に置かれた「メニューに表示するボタン」をメニューの内容として表示します。
      */
     //% group="メインメニュー"
     //% weight=10
@@ -319,6 +318,7 @@ namespace atm_program {
 
     /**
      * メニューにボタンを追加する
+     * メインメニューに指定したボタンを追加します。
      */
     //% group="メインメニュー"
     //% weight=9
@@ -348,85 +348,6 @@ namespace atm_program {
         body: () => void
     ): void {
         emit("EVENT:" + getAtmButtonString(button));
-
-        pushDepth();
-
-        body();
-
-        popDepth();
-
-        emit("EVENT_END");
-    }
-
-    /**
-     * 残高確認ボタンを押したとき
-     */
-    //% group="各メニュー"
-    //% weight=10
-    //% block="残高確認ボタンを押したとき"
-    export function onPushBalance(body: () => void): void {
-
-        emit("EVENT:BALANCE");
-
-        pushDepth();
-
-        body();
-
-        popDepth();
-
-        emit("EVENT_END");
-    }
-
-
-    /**
-     * 預金ボタンを押したとき
-     */
-    //% group="各メニュー"
-    //% weight=9
-    //% block="預金ボタンを押したとき"
-    export function onPushDeposit(body: () => void): void {
-
-        emit("EVENT:DEPOSIT");
-
-        pushDepth();
-
-        body();
-
-        popDepth();
-
-        emit("EVENT_END");
-    }
-
-
-    /**
-     * 引き出しボタンを押したとき
-     */
-    //% group="各メニュー"
-    //% weight=8
-    //% block="引き出しボタンを押したとき"
-    export function onPushWithdraw(body: () => void): void {
-
-        emit("EVENT:WITHDRAW");
-
-        pushDepth();
-
-        body();
-
-        popDepth();
-
-        emit("EVENT_END");
-    }
-
-
-    /**
-     * チャージボタンを押したとき
-     */
-    //% group="各メニュー"
-    //% weight=7
-    //% block="チャージボタンを押したとき"
-    export function onPushCharge(body: () => void): void {
-
-        emit("EVENT:CHARGE");
 
         pushDepth();
 
