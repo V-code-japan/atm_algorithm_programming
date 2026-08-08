@@ -111,6 +111,57 @@ function popDepth(): void {
     }
 }
 
+/**
+ * enumに対応する命令文を返す
+ */
+function getConditionString(condition: AtmCondition): string {
+
+    switch (condition) {
+
+        case AtmCondition.HasEmerald:
+            return "HAS_EMERALD";
+
+        case AtmCondition.NotHasEmerald:
+            return "NOT_HAS_EMERALD";
+
+        case AtmCondition.HasCashCard:
+            return "HAS_CASH_CARD";
+
+        case AtmCondition.NotHasCashCard:
+            return "NOT_HAS_CASH_CARD";
+
+        case AtmCondition.HasBalance:
+            return "HAS_BALANCE";
+
+        case AtmCondition.NotHasBalance:
+            return "NOT_HAS_BALANCE";
+    }
+
+    return "";
+}
+
+/**
+ * ATMメニューをDSL文字列に変換する
+ */
+function getAtmMenuString(menu: AtmMenu): string {
+
+    switch (menu) {
+
+        case AtmMenu.Balance:
+            return "BALANCE";
+
+        case AtmMenu.Deposit:
+            return "DEPOSIT";
+
+        case AtmMenu.Withdraw:
+            return "WITHDRAW";
+
+        case AtmMenu.Charge:
+            return "CHARGE";
+    }
+
+    return "";
+}
 
 /**
  * ============================================================
@@ -334,6 +385,16 @@ namespace atm_program {
      * ========================================================
      */
 
+
+    /**
+     * 画面を表示する命令
+     * 指定した画面のメニューを表示します。
+     */
+    //% block="画面: $atmMenu を表示"
+    export function show(atmMenu: AtmMenu): void {
+        emit("SHOW:" + getAtmMenuString(atmMenu));
+    }
+
     /**
      * 残高画面を表示
      */
@@ -416,38 +477,13 @@ namespace atm_condition {
      *
      * を生成する。
      */
-    //% block="エメラルドを持っている"
-    export function hasEmerald(): boolean {
+    //% block="条件: $atmCondition"
+    export function condition(atmCondition: AtmCondition): boolean {
 
-        emit("IF:HAS_EMERALD");
-
-        return true;
-    }
-
-
-    /**
-     * キャッシュカードを持っている
-     */
-    //% block="キャッシュカードを持っている"
-    export function hasCashCard(): boolean {
-
-        emit("IF:HAS_CASH_CARD");
+        emit("IF:" + getConditionString(atmCondition));
 
         return true;
     }
-
-
-    /**
-     * 残高がある
-     */
-    //% block="残高がある"
-    export function hasBalance(): boolean {
-
-        emit("IF:HAS_BALANCE");
-
-        return true;
-    }
-
 
     /**
      * ========================================================
@@ -456,20 +492,9 @@ namespace atm_condition {
      */
 
     /**
-     * 通常のMakeCodeの
-     *
-     * 「もし ～ なら
-     *       ○○
-     *  でなければ
-     *       ○○」
-     *
-     * と同じ構造を作る。
-     *
-     * conditionが評価された時点で
-     * hasEmerald()などがIF命令を生成しているため、
-     * この関数では実際のboolean値は使用しない。
+     * 「もし～なら」という条件分岐を作ります。
      */
-    //% block="もし $condition なら || でなければ"
+    //% block="もし $condition なら"
     //% handlerStatement=1
     //% expandableArgument=1
     export function customIf(
