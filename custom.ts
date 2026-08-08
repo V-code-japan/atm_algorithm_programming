@@ -337,6 +337,28 @@ namespace atm_program {
      */
 
     /**
+     * ボタンを押したとき
+     * メインメニューで押したボタンに応じてプログラムを実行します。
+     */
+    //% group="各メニュー"
+    //% weight=10
+    //% block="ボタン: $button を押したとき"
+    export function onPush(
+        button: AtmButton,
+        body: () => void
+    ): void {
+        emit("EVENT:" + getAtmButtonString(button));
+
+        pushDepth();
+
+        body();
+
+        popDepth();
+
+        emit("EVENT_END");
+    }
+
+    /**
      * 残高確認ボタンを押したとき
      */
     //% group="各メニュー"
