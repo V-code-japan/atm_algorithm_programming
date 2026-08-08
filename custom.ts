@@ -455,7 +455,7 @@ namespace atm {
      * hasEmerald()などがIF命令を生成しているため、
      * この関数では実際のboolean値は使用しない。
      */
-    //% block="もし $condition ならば $thenBody || そうでなければ $elseBody"
+    //% block="もし $condition ならば || そうでなければ"
     //% handlerStatement=true
     //% expandableArgument=true
     export function ifElse(
