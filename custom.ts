@@ -29,6 +29,25 @@ enum AtmMenu {
     Error,
 }
 
+/**
+ * ============================================================
+ * ATM ボタン
+ * ============================================================
+ */
+enum AtmButton {
+    //% block="残高確認"
+    Balance,
+
+    //% block="預金"
+    Deposit,
+
+    //% block="引き出し"
+    Withdraw,
+
+    //% block="チャージ"
+    Charge,
+}
+
 
 /**
  * ============================================================
@@ -170,6 +189,29 @@ function getAtmMenuString(menu: AtmMenu): string {
 }
 
 /**
+ * ATMボタンをDSL文字列に変換する
+ */
+function getAtmButtonString(button: AtmButton): string {
+
+    switch (button) {
+
+        case AtmButton.Balance:
+            return "BALANCE";
+
+        case AtmButton.Deposit:
+            return "DEPOSIT";
+
+        case AtmButton.Withdraw:
+            return "WITHDRAW";
+
+        case AtmButton.Charge:
+            return "CHARGE";
+    }
+
+    return "";
+}
+
+/**
  * ============================================================
  * Custom Blocks
  * ============================================================
@@ -266,6 +308,15 @@ namespace atm_program {
         emit("MENU_END");
     }
 
+
+    /**
+     * メニューにボタンを追加する
+     */
+    //% block="ボタン: $atmButton を追加する"
+    export function addButton(atmButton: AtmButton): void {
+
+        emit("BUTTON:" + getAtmButtonString(atmButton));
+    }
 
     /**
      * メニューに残高確認ボタンを追加
@@ -396,7 +447,7 @@ namespace atm_program {
      * 画面を表示する命令
      * 指定した画面のメニューを表示します。
      */
-    //% block="画面: $atmMenu を表示"
+    //% block="画面: $atmMenu"
     export function show(atmMenu: AtmMenu): void {
         emit("SHOW:" + getAtmMenuString(atmMenu));
     }
