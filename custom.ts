@@ -250,7 +250,7 @@ namespace atm {
     /**
      * 残高確認ボタンを押したとき
      */
-    //% block="残高確認ボタンを押したとき $body"
+    //% block="残高確認ボタンを押したとき"
     export function onPushBalance(body: () => void): void {
 
         emit("EVENT:BALANCE");
@@ -268,7 +268,7 @@ namespace atm {
     /**
      * 預金ボタンを押したとき
      */
-    //% block="預金ボタンを押したとき $body"
+    //% block="預金ボタンを押したとき"
     export function onPushDeposit(body: () => void): void {
 
         emit("EVENT:DEPOSIT");
@@ -286,7 +286,7 @@ namespace atm {
     /**
      * 引き出しボタンを押したとき
      */
-    //% block="引き出しボタンを押したとき $body"
+    //% block="引き出しボタンを押したとき"
     export function onPushWithdraw(body: () => void): void {
 
         emit("EVENT:WITHDRAW");
@@ -304,7 +304,7 @@ namespace atm {
     /**
      * チャージボタンを押したとき
      */
-    //% block="チャージボタンを押したとき $body"
+    //% block="チャージボタンを押したとき"
     export function onPushCharge(body: () => void): void {
 
         emit("EVENT:CHARGE");
