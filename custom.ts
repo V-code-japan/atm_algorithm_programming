@@ -284,7 +284,7 @@ namespace atm_program {
     //% handlerStatement=true
     export function showMainMenu(body: () => void): void {
 
-        emit("MENU");
+        emit("MENU_BEGIN");
 
         pushDepth();
 
@@ -305,7 +305,7 @@ namespace atm_program {
     //% block="ボタン: $atmButton を追加する"
     export function addButton(atmButton: AtmButton): void {
 
-        emit("BUTTON:" + getAtmButtonString(atmButton));
+        emit("MENU_BUTTON:" + getAtmButtonString(atmButton));
     }
 
     /**
@@ -319,7 +319,7 @@ namespace atm_program {
         button: AtmButton,
         body: () => void
     ): void {
-        emit("EVENT:" + getAtmButtonString(button));
+        emit("EVENT_BEGIN:" + getAtmButtonString(button));
 
         pushDepth();
 
