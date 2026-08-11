@@ -234,6 +234,8 @@ namespace atm_program {
         atmFlow = [];
         atmDepth = 0;
 
+        emit("MAIN_BEGIN");
+
         body();
 
         if (atmFlow.length > 0) {
@@ -319,6 +321,9 @@ namespace atm_program {
         button: AtmButton,
         body: () => void
     ): void {
+        atmFlow = [];
+        atmDepth = 0;
+
         emit("EVENT_BEGIN:" + getAtmButtonString(button));
 
         pushDepth();
@@ -327,7 +332,15 @@ namespace atm_program {
 
         popDepth();
 
-        emit("EVENT_END");
+        if (atmFlow.length > 0) {
+
+            player.execute(
+                'edu:atm_program "' + atmFlow.join("|") + '"'
+            );
+        }
+
+        atmFlow = [];
+        atmDepth = 0;
     }
 
     /**
