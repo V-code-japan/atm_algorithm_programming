@@ -400,6 +400,6 @@ namespace atm_condition {
         pushDepth();
         thenHandler();
         popDepth();
-        emit("IF_END");
+        emit("END_IF");
     }
 }
