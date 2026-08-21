@@ -24,16 +24,40 @@ enum AtmMenu {
 
     //% block="チャージ"
     Charge,
-
-    //% block="エラー"
-    Error,
 }
+
+
+/**
+ * ============================================================
+ * ATM エラー
+ * ============================================================
+ */
+
+//% blockHidden=true
+enum AtmError {
+    //% block="お金が足りません"
+    InsufficientMoney,
+
+    //% block="残高が足りません"
+    InsufficientBalance,
+
+    //% block="残高がありません"
+    NoBalance,
+
+    //% block="キャッシュレスカードがありません"
+    NoCashlessCard,
+
+    //% block="この操作は実行できません"
+    Unexecutable,
+}
+
 
 /**
  * ============================================================
  * ATM ボタン
  * ============================================================
  */
+
 enum AtmButton {
     //% block="残高確認"
     Balance,
@@ -133,8 +157,15 @@ function popDepth(): void {
     }
 }
 
+
 /**
- * enumに対応する命令文を返す
+ * ============================================================
+ * Enum → DSL
+ * ============================================================
+ */
+
+/**
+ * 条件をDSL文字列に変換する
  */
 function getConditionString(condition: AtmCondition): string {
 
@@ -162,6 +193,7 @@ function getConditionString(condition: AtmCondition): string {
     return "";
 }
 
+
 /**
  * ATMメニューをDSL文字列に変換する
  */
@@ -180,13 +212,38 @@ function getAtmMenuString(menu: AtmMenu): string {
 
         case AtmMenu.Charge:
             return "CHARGE";
-        
-        case AtmMenu.Error:
-            return "ERROR";
     }
 
     return "";
 }
+
+
+/**
+ * ATMエラーをDSL文字列に変換する
+ */
+function getAtmErrorString(error: AtmError): string {
+
+    switch (error) {
+
+        case AtmError.InsufficientMoney:
+            return "INSUFFICIENT_MONEY";
+
+        case AtmError.InsufficientBalance:
+            return "INSUFFICIENT_BALANCE";
+
+        case AtmError.NoBalance:
+            return "NO_BALANCE";
+
+        case AtmError.NoCashlessCard:
+            return "NO_CASHLESS_CARD";
+
+        case AtmError.Unexecutable:
+            return "UNEXECUTABLE";
+    }
+
+    return "";
+}
+
 
 /**
  * ATMボタンをDSL文字列に変換する
@@ -211,6 +268,7 @@ function getAtmButtonString(button: AtmButton): string {
     return "";
 }
 
+
 /**
  * ============================================================
  * Custom Blocks
@@ -227,7 +285,7 @@ namespace atm_program {
      * プログラム全体を実行します。
      */
     //% group="全体の制御"
-    //% weight = 10
+    //% weight=10
     //% block="ATMプログラム"
     export function program(body: () => void): void {
 
@@ -278,7 +336,8 @@ namespace atm_program {
 
     /**
      * メインメニューを表示:
-     * このブロックの中に置かれた「メニューに表示するボタン」をメニューの内容として表示します。
+     * このブロックの中に置かれた「メニューに表示するボタン」を
+     * メニューの内容として表示します。
      */
     //% group="メインメニュー"
     //% weight=10
@@ -310,6 +369,7 @@ namespace atm_program {
         emit("MENU_BUTTON:" + getAtmButtonString(atmButton));
     }
 
+
     /**
      * ボタンを押したとき:
      * メインメニューで押したボタンに応じてプログラムを実行します。
@@ -321,6 +381,7 @@ namespace atm_program {
         button: AtmButton,
         body: () => void
     ): void {
+
         atmFlow = [];
         atmDepth = 0;
 
@@ -343,6 +404,7 @@ namespace atm_program {
         atmDepth = 0;
     }
 
+
     /**
      * 画面を表示する:
      * 指定したメニューの画面を表示します。
@@ -351,21 +413,35 @@ namespace atm_program {
     //% weight=6
     //% block="画面: $atmMenu を表示する"
     export function show(atmMenu: AtmMenu): void {
+
         emit("SHOW:" + getAtmMenuString(atmMenu));
     }
+
+
+    /**
+     * エラー画面を表示する:
+     * 指定した理由のエラー画面を表示します。
+     */
+    //% group="各メニュー"
+    //% weight=5
+    //% block="エラー画面: $atmError を表示する"
+    export function showError(atmError: AtmError): void {
+
+        emit("SHOW_ERROR:" + getAtmErrorString(atmError));
+    }
+
 
     /**
      * メニューに戻る:
      * メインメニューに戻ります。
      */
     //% group="各メニュー"
-    //% weight=5
+    //% weight=4
     //% block="メインメニューに戻る"
     export function returnMenu(): void {
 
         emit("RETURN");
     }
-
 }
 
 
@@ -386,6 +462,7 @@ namespace atm_condition {
         return true;
     }
 
+
     /**
      * 条件分岐:
      * 「もし～なら」という条件分岐を作ります。
@@ -397,9 +474,13 @@ namespace atm_condition {
         condition: boolean,
         thenHandler: () => void,
     ): void {
+
         pushDepth();
+
         thenHandler();
+
         popDepth();
+
         emit("END_IF");
     }
 }
