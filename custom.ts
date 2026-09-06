@@ -188,6 +188,12 @@ function getConditionString(condition: AtmCondition): string {
 
         case AtmCondition.NotHasCashCard:
             return "NOT_HAS_CASH_CARD";
+        
+        case AtmCondition.HasCashLessCard:
+            return "HAS_CASH_LESS_CARD";
+
+        case AtmCondition.NotHasCashLessCard:
+            return "NOT_HAS_CASH_LESS_CARD";
 
         case AtmCondition.HasBalance:
             return "HAS_BALANCE";
