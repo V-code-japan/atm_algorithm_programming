@@ -92,6 +92,12 @@ enum AtmCondition {
     //% block="キャッシュカードを持っていない"
     NotHasCashCard,
 
+    //% block="キャッシュレスカードを持っている"
+    HasCashLessCard,
+
+    //% block="キャッシュレスカードを持っていない"
+    NotHasCashLessCard,
+
     //% block="残高がある"
     HasBalance,
 
