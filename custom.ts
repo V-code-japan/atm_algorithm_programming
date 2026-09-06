@@ -405,7 +405,7 @@ namespace atm_program {
         popDepth();
 
         if (atmFlow.length > 0) {
-            player.say("[onPush]" + atmFlow.join("|"));
+            player.say("onPush" + atmFlow.join("|"));
 
             player.execute(
                 'edu:atm_program "' + atmFlow.join("|") + '"'
