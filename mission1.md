@@ -9,19 +9,24 @@ atm_program.program(function () {
         atm_program.addButton(AtmButton.Charge)
     })
 })
-atm_program.onPush(AtmButton.Balance, function () {
-    atm_condition.customIf(atm_condition.condition(AtmCondition.HasBalance), function () {
-        atm_program.show(AtmMenu.Balance)
-    })
-    atm_program.returnMenu()
-})
 
 ```
 
-## プログラミングで、ATMの仕組みを作ってみましょう
-前回考えた**フローチャート**を元にして、プログラミングしてみましょう。
+## プログラミングでATMのメイン画面を作ろう！
+メイン画面とは、ATMを開いたときに始めに表示される画面のことです。
+ATMの各機能の画面に進むためのボタンを表示させましょう！
 
 ## メイン画面の仕組みを作るプログラム
-メイン画面を起動させるには、**ATMを起動する**プログラムが必要です。
-はじめに実行するのを忘れないようにしましょう！
+メイン画面は、**ヒント**の画像のようにボタンが並んでいます。
+ヒントは💡ボタンを押すと見ることができます。
+どのようにプログラムすれば良いか考えてみましょう！
+
+![mission1_hint]()
+
+## できたか試してみよう！
+プログラミングが出来上がったら、**右下の▶ボタン**を押してプログラムを実行しましょう。
+ボタンを押してゲーム画面に戻ったら、**ATMを右クリック**して開いて、プログラムした通りにメニュー画面ができているか確認しましょう！
+
+できているのを確認したら、**NPCを右クリック**して、「できた！」と伝えましょう！
+
 
