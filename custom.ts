@@ -83,26 +83,14 @@ enum AtmCondition {
     //% block="エメラルドを持っている"
     HasEmerald,
 
-    //% block="エメラルドを持っていない"
-    NotHasEmerald,
-
     //% block="キャッシュカードを持っている"
     HasCashCard,
-
-    //% block="キャッシュカードを持っていない"
-    NotHasCashCard,
 
     //% block="キャッシュレスカードを持っている"
     HasCashLessCard,
 
-    //% block="キャッシュレスカードを持っていない"
-    NotHasCashLessCard,
-
     //% block="残高がある"
     HasBalance,
-
-    //% block="残高がない"
-    NotHasBalance,
 }
 
 
@@ -180,26 +168,14 @@ function getConditionString(condition: AtmCondition): string {
         case AtmCondition.HasEmerald:
             return "HAS_EMERALD";
 
-        case AtmCondition.NotHasEmerald:
-            return "NOT_HAS_EMERALD";
-
         case AtmCondition.HasCashCard:
             return "HAS_CASH_CARD";
 
-        case AtmCondition.NotHasCashCard:
-            return "NOT_HAS_CASH_CARD";
-        
         case AtmCondition.HasCashLessCard:
             return "HAS_CASH_LESS_CARD";
 
-        case AtmCondition.NotHasCashLessCard:
-            return "NOT_HAS_CASH_LESS_CARD";
-
         case AtmCondition.HasBalance:
             return "HAS_BALANCE";
-
-        case AtmCondition.NotHasBalance:
-            return "NOT_HAS_BALANCE";
     }
 
     return "";
@@ -247,7 +223,7 @@ function getAtmErrorString(error: AtmError): string {
             return "NO_BALANCE";
 
         case AtmError.NoCashlessCard:
-            return "NO_CASHLESS_CARD";
+            return "NO_CASH_LESS_CARD";
 
         case AtmError.Unexecutable:
             return "UNEXECUTABLE";
@@ -393,6 +369,7 @@ namespace atm_program {
         button: AtmButton,
         body: () => void
     ): void {
+
         atmFlow = [];
         atmDepth = 0;
 
