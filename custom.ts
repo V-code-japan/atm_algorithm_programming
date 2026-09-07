@@ -106,7 +106,7 @@ let atmFlow: string[] = [];
  * 現在のDSL階層
  *
  * 0:
- * RUN
+ * >MAIN:BEGIN
  *
  * 1:
  * >SHOW:BALANCE
