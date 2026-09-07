@@ -294,32 +294,7 @@ namespace atm_program {
         atmFlow = [];
         atmDepth = 0;
     }
-
-
-    /**
-     * ATMを起動:
-     * ATMを起動させます。
-     */
-    //% group="全体の制御"
-    //% weight=9
-    //% block="ATMを起動させる"
-    export function runAtm(): void {
-
-        emit("RUN");
-    }
-
-
-    /**
-     * ATMを終了:
-     * ATMを終了させます。
-     */
-    //% group="全体の制御"
-    //% weight=8
-    //% block="ATMを終了させる"
-    export function endAtm(): void {
-
-        emit("END");
-    }
+    
 
 
     /**
