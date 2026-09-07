@@ -10,7 +10,9 @@
         "main.ts",
         "README.md",
         "custom.ts",
-        "docs/tutorials/mission1.md"
+        "docs/tutorials/mission1.md",
+        "docs/tutorials/mission2.md",
+        "docs/tutorials/mission3.md"
     ],
     "testFiles": [
         "test.ts"
