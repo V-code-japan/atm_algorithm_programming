@@ -12,6 +12,12 @@ atm_program.program(function () {
 
 ```
 
+```template
+atm_program.program(function () {
+
+})
+```
+
 ## プログラミングでATMのメイン画面を作ろう！
 メイン画面とは、ATMを開いたときに始めに表示される画面のことです。
 ATMの各機能の画面に進むためのボタンを表示させましょう！

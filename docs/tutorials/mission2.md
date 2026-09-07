@@ -17,7 +17,17 @@ atm_program.onPush(AtmButton.Balance, function () {
     atm_program.showError(AtmError.NoCashCard)
     atm_program.returnMenu()
 })
+```
 
+```template
+atm_program.program(function () {
+    atm_program.showMainMenu(function () {
+        atm_program.addButton(AtmButton.Balance)
+        atm_program.addButton(AtmButton.Deposit)
+        atm_program.addButton(AtmButton.Withdraw)
+        atm_program.addButton(AtmButton.Charge)
+    })
+})
 ```
 
 ## プログラミングで残高確認画面を作ろう！

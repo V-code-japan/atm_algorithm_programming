@@ -1,6 +1,57 @@
 # 全体の機能をプログラミングしてみよう！
 
 ```blocks
+atm_program.onPush(AtmButton.Deposit, function () {
+    atm_condition.customIf(atm_condition.condition(AtmCondition.HasCashCard), function () {
+        atm_condition.customIf(atm_condition.condition(AtmCondition.HasEmerald), function () {
+            atm_program.show(AtmMenu.Deposit)
+            atm_program.returnMenu()
+        })
+    })
+    atm_program.showError(AtmError.InsufficientMoney)
+    atm_program.returnMenu()
+})
+atm_program.onPush(AtmButton.Charge, function () {
+    atm_condition.customIf(atm_condition.condition(AtmCondition.HasCashLessCard), function () {
+        atm_condition.customIf(atm_condition.condition(AtmCondition.HasBalance), function () {
+            atm_program.show(AtmMenu.Charge)
+            atm_program.returnMenu()
+        })
+    })
+    atm_program.showError(AtmError.NoBalance)
+    atm_program.returnMenu()
+})
+atm_program.onPush(AtmButton.Balance, function () {
+    atm_condition.customIf(atm_condition.condition(AtmCondition.HasCashCard), function () {
+        atm_program.show(AtmMenu.Balance)
+        atm_program.returnMenu()
+    })
+    atm_program.showError(AtmError.NoCashCard)
+    atm_program.returnMenu()
+})
+atm_program.program(function () {
+    atm_program.showMainMenu(function () {
+        atm_program.addButton(AtmButton.Balance)
+        atm_program.addButton(AtmButton.Deposit)
+        atm_program.addButton(AtmButton.Withdraw)
+        atm_program.addButton(AtmButton.Charge)
+    })
+})
+atm_program.onPush(AtmButton.Withdraw, function () {
+    atm_condition.customIf(atm_condition.condition(AtmCondition.HasCashCard), function () {
+        atm_condition.customIf(atm_condition.condition(AtmCondition.HasBalance), function () {
+            atm_program.show(AtmMenu.Withdraw)
+            atm_program.returnMenu()
+        })
+    })
+    atm_program.showError(AtmError.NoBalance)
+    atm_program.returnMenu()
+})
+
+
+```
+
+```template
 atm_program.program(function () {
     atm_program.showMainMenu(function () {
         atm_program.addButton(AtmButton.Balance)
@@ -17,7 +68,6 @@ atm_program.onPush(AtmButton.Balance, function () {
     atm_program.showError(AtmError.NoCashCard)
     atm_program.returnMenu()
 })
-
 ```
 
 ## 残りの画面も作ろう！
@@ -26,7 +76,7 @@ atm_program.onPush(AtmButton.Balance, function () {
 ## 各画面の仕組みを作るプログラム
 各画面は、次のような条件で開けるようにしましょう。
 
-1. 預金画面: キャッシュカードを持っていて、エメラルドを持っているなら表示⇒メインメニューに戻る　持っていないなら「エメラルドを持っていません」とエラー画面を表示⇒メインメニューに戻る
+1. 預金画面: キャッシュカードを持っていて、エメラルドを持っているなら表示⇒メインメニューに戻る　持っていないなら「お金が足りません」とエラー画面を表示⇒メインメニューに戻る
 2. 引き出し画面: キャッシュカードを持っていて、残高があるなら表示⇒メインメニューに戻る　残高がないなら「残高がありません」とエラー画面を表示⇒メインメニューに戻る
 2. チャージ画面: **キャッシュレスカード**を持っていて、残高があるなら表示⇒メインメニューに戻る　残高がないなら「残高がありません」とエラー画面を表示⇒メインメニューに戻る
 
