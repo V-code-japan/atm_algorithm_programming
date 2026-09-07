@@ -9,7 +9,8 @@
         "main.blocks",
         "main.ts",
         "README.md",
-        "custom.ts"
+        "custom.ts",
+        "docs/tutorials/mission1.md"
     ],
     "testFiles": [
         "test.ts"
