@@ -44,6 +44,9 @@ enum AtmError {
     //% block="残高がありません"
     NoBalance,
 
+    //% block="キャッシュカードがありません"
+    NoCashCard,
+
     //% block="キャッシュレスカードがありません"
     NoCashlessCard,
 
@@ -221,6 +224,9 @@ function getAtmErrorString(error: AtmError): string {
 
         case AtmError.NoBalance:
             return "NO_BALANCE";
+        
+        case AtmError.NoCashCard:
+            return "NO_CASH_CARD";
 
         case AtmError.NoCashlessCard:
             return "NO_CASH_LESS_CARD";
