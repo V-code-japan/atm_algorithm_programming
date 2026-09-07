@@ -21,7 +21,7 @@ ATMの各機能の画面に進むためのボタンを表示させましょう�
 ヒントは💡ボタンを押すと見ることができます。
 どのようにプログラムすれば良いか考えてみましょう！
 
-![mission1_hint](/static/mission1_hint.png)
+![mission1_hint](https://raw.githubusercontent.com/V-code-japan/atm_algorithm_programming/master/docs/static/mission1_hint.png)
 
 ## できたか試してみよう！
 プログラミングが出来上がったら、**右下の▶ボタン**を押してプログラムを実行しましょう。
